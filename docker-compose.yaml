@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: api-seguranca
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE:  api_seguranca
+      MYSQL_USER: davi
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - db_data:/var/lib/mysql # persistência de dados
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # scripts de inicialização
+volumes:
+  db_data:
