@@ -1,24 +1,28 @@
 from sqlalchemy import Column, Integer, String
-from pydantic import BaseModel
+from app.database.db import Base
+from pydantic import BaseModel, EmailStr, constr
 
-class Usuarios(Base):
+CPFStr = constr(min_length=11, max_length=11)
+
+class Usuario(Base):
     __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String(50))
-    idade = Column(Integer)
-    CPF = Column(String(50))
-    telefone = Column(String(50))
-    email = Column(String(100))
-    senha = Column(String(100))
+    nome = Column(String(100), nullable=False)
+    idade = Column(Integer, nullable=False)
+    cpf = Column(String(11), nullable=False, unique=True)
+    telefone = Column(String(15), nullable=False)
+    email = Column(String(100), nullable=False, unique=True)
+    senha = Column(String(255), nullable=False)
 
-class UsuariosBase(BaseModel):
+class UsuarioCreate(BaseModel):
     nome: str
     idade: int
-    CPF: str
+    cpf: CPFStr # type: ignore
     telefone: str
-    email: str
+    email: EmailStr
     senha: str
 
-class UsuariosCreate(UsuariosBase):
-    pass
+class UsuarioLogin(BaseModel):
+    email: EmailStr
+    senha: str
