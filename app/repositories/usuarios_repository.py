@@ -9,3 +9,10 @@ def salvar_usuario(db: Session, usuario: Usuario):
     db.commit()
     db.refresh(usuario)
     return usuario
+
+def buscar_por_id(db: Session, usuario_id: int):
+    return db.query(Usuario).filter(Usuario.id == usuario_id).first()
+
+def deletar_usuario(db: Session, usuario: Usuario):
+    db.delete(usuario)
+    db.commit()
