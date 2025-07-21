@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
 import base64
 import os
+from typing import Union
 
 
 class Crypto():
@@ -31,6 +32,21 @@ class Crypto():
 
     def descriptografar(self, texto_criptografado: str) -> str:
         return self.fernet.decrypt(texto_criptografado.encode()).decode()
+    
+    def descriptografar_campos(self, obj: Union[dict, object], campos: list):
+        for campo in campos:
+            valor = getattr(obj, campo, None) if hasattr(obj, campo) else obj.get(campo)
+            if valor is not None:
+                try:
+                    valor_descriptografado = self.descriptografar(valor)
+                    if hasattr(obj, campo):
+                        setattr(obj, campo, valor_descriptografado)
+                    else:
+                        obj[campo] = valor_descriptografado
+                except Exception:
+                    pass
+        return obj
+
     
     def descriptografar_lista(self, lista_objetos: list, campos: list):
         for obj in lista_objetos:
